@@ -1,7 +1,7 @@
 // sw.js — מטמון אופליין. cache-first לנכסים, network-first לנתונים כדי שעדכוני תוכן ייקלטו.
 
 // העלה את המספר בכל פריסה — כך המטמון הישן נמחק.
-const VERSION = 'hq-v2';
+const VERSION = 'hq-v3';
 const SHELL = [
   './',
   './index.html',
