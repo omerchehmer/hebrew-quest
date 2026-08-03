@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>מכרה המילים — מסך הורה</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12161f">
+<link rel="stylesheet" href="css/app.css">
+<style>
+  .p-wrap { max-width: 780px; margin: 0 auto; padding: calc(env(safe-area-inset-top) + 18px) 16px 60px; }
+  .p-head { display:flex; justify-content:space-between; align-items:flex-start; gap:12px; margin-bottom:18px; }
+  .p-head h1 { font-size:1.5em; margin:0; }
+  .kpis { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-bottom:22px; }
+  .kpi { background:var(--surface); border:2px solid var(--line); border-radius:12px; padding:12px 8px; text-align:center; }
+  .kpi b { display:block; font-size:1.5em; }
+  .kpi span { color:var(--muted); font-size:.75em; }
+  .panel { background:var(--surface); border:2px solid var(--line); border-radius:14px; padding:16px; margin-bottom:16px; }
+  .panel h2 { font-size:1.08em; margin:0 0 12px; }
+  table { width:100%; border-collapse:collapse; font-size:.9em; }
+  th, td { text-align:start; padding:7px 6px; border-bottom:1px solid var(--line); }
+  th { color:var(--muted); font-weight:600; font-size:.85em; }
+  .acc { font-weight:700; }
+  .acc.good { color:var(--green); } .acc.mid { color:var(--gold); } .acc.bad { color:var(--red); }
+  .wordlist { display:flex; flex-wrap:wrap; gap:6px; }
+  .wtag { background:var(--surface2); border:1px solid var(--line); border-radius:999px; padding:5px 12px; font-size:.88em; }
+  .wtag b { color:var(--red); margin-inline-start:6px; }
+  .cal { display:grid; grid-template-columns:repeat(7,1fr); gap:6px; }
+  .cd { aspect-ratio:1; border-radius:8px; background:var(--surface2); border:1px solid var(--line);
+        display:grid; place-items:center; font-size:.8em; color:var(--muted); }
+  .cd.done { background:color-mix(in srgb, var(--green) 30%, var(--surface2)); color:var(--text); border-color:var(--green); }
+  .cd.miss { border-color:var(--red); opacity:.6; }
+  .rec { border-inline-start:4px solid var(--gold); padding-inline-start:12px; }
+  .writing-sample { background:var(--bg2); border-radius:10px; padding:12px; margin-bottom:10px; font-size:.92em; }
+  .writing-sample small { color:var(--muted); display:block; margin-bottom:4px; }
+  .gate { max-width:360px; margin:22vh auto; text-align:center; display:flex; flex-direction:column; gap:12px; }
+  .err { color:var(--red); }
+</style>
+</head>
+<body>
+<div class="p-wrap" id="root"><p class="hint">טוען…</p></div>
+
+<script type="module">
+import { loadContent, content } from './js/content.js';
+import { SUPABASE_URL, SUPABASE_ANON_KEY, syncEnabled } from './js/config.js';
+import { el, clear, btn, toast } from './js/ui.js';
+
+const root = document.getElementById('root');
+const childKey = location.hash.replace(/^#/, '').trim();
+
+const pct = (c, t) => (t ? Math.round((c / t) * 100) : 0);
+const accClass = (p) => (p >= 85 ? 'good' : p >= 65 ? 'mid' : 'bad');
+
+init();
+
+async function init() {
+  await loadContent('data/');
+  if (childKey) return loadRemote(childKey);
+  return loadLocal();
+}
+
+/* מרחוק: הקישור עצמו הוא הסוד */
+async function loadRemote(key) {
+  if (!syncEnabled()) {
+    return fail('הסנכרון לא הוגדר. מלא את js/config.js לפי ההוראות ב-README כדי לראות נתונים מרחוק.');
+  }
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/get_progress`, {
+      method: 'POST',
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ k: key }),
+    });
+    if (!res.ok) throw new Error(`שגיאה ${res.status}`);
+    const rows = await res.json();
+    if (!rows.length) return fail('אין עדיין נתונים למזהה הזה. שיחק כבר תחנה אחת?');
+    render(rows[0].state, rows[0].updated_at);
+  } catch (e) {
+    fail('לא הצלחתי למשוך נתונים: ' + e.message);
+  }
+}
+
+/* מקומית (על המכשיר שלו): דורש קוד הורה */
+function loadLocal() {
+  const raw = localStorage.getItem('hq.state.v1');
+  if (!raw) return fail('אין נתונים במכשיר הזה. פתח את הקישור עם המזהה בסוף, או שחק קודם באפליקציה.');
+  const s = JSON.parse(raw);
+  const pin = s.settings?.parentPin;
+  if (!pin) return render(toSnapshot(s));
+  const inp = el('input', { class: 'pin-input', type: 'tel', maxlength: 4, placeholder: '••••' });
+  clear(root).append(
+    el('div', { class: 'gate' },
+      el('h1', { text: 'מסך הורה' }),
+      el('p', { class: 'sub', text: 'הזן את קוד ההורה' }),
+      inp,
+      btn('כניסה', () => (inp.value === pin ? render(toSnapshot(s)) : toast('קוד שגוי')))
+    )
+  );
+}
+
+function toSnapshot(s) {
+  return {
+    name: s.name, day: s.day, completedDays: s.completedDays, streak: s.streak,
+    xp: s.xp, crystals: s.crystals, level: Math.floor(s.xp / 250) + 1,
+    stats: s.stats, srs: s.srs, glossary: s.glossary, log: s.log,
+    writing: s.writing, blocks: s.world?.placed?.length || 0,
+  };
+}
+
+function fail(msg) {
+  clear(root).append(el('div', { class: 'gate' }, el('p', { class: 'err', text: msg })));
+}
+
+/* ---------- הדשבורד ---------- */
+
+function render(st, updatedAt) {
+  const b = content();
+  const days = b.curriculum.days;
+  const doneDays = Object.keys(st.completedDays || {}).length;
+
+  clear(root).append(
+    el('div', { class: 'p-head' },
+      el('div', {},
+        el('h1', { text: `ההתקדמות של ${st.name || 'הילד'}` }),
+        el('p', { class: 'hint', text: updatedAt ? `עודכן: ${new Date(updatedAt).toLocaleString('he-IL')}` : 'נתונים מהמכשיר הזה' })
+      ),
+      btn('ייצוא CSV', () => exportCsv(st), 'ghost')
+    ),
+    kpis(st, doneDays),
+    strandPanel(st),
+    skillPanel(st, b),
+    errorsPanel(st, b),
+    glossaryPanel(st),
+    calendarPanel(st, days),
+    writingPanel(st),
+    recommendPanel(st, b)
+  );
+}
+
+function kpis(st, doneDays) {
+  return el('div', { class: 'kpis' },
+    kpi(`${doneDays}/28`, 'ימים הושלמו'),
+    kpi(st.streak?.count ?? 0, 'רצף ימים'),
+    kpi(st.level ?? 1, 'רמה'),
+    kpi(overall(st) + '%', 'דיוק כולל')
+  );
+}
+const kpi = (v, l) => el('div', { class: 'kpi' }, el('b', { text: String(v) }), el('span', { text: l }));
+
+function overall(st) {
+  const v = Object.values(st.stats?.byStrand || {});
+  const c = v.reduce((a, x) => a + x.c, 0);
+  const t = v.reduce((a, x) => a + x.t, 0);
+  return pct(c, t);
+}
+
+function strandPanel(st) {
+  const strands = content().strands;
+  const rows = Object.entries(st.stats?.byStrand || {}).map(([k, v]) => {
+    const p = pct(v.c, v.t);
+    const meta = strands[k] || {};
+    return el('div', { class: 'stat-row' },
+      el('span', { class: 'st-name', text: `${meta.icon || ''} ${meta.title || k}` }),
+      el('div', { class: 'st-bar' }, el('i', { style: { width: p + '%', background: meta.color || '#888' } })),
+      el('b', { class: 'acc ' + accClass(p), text: `${p}%` }),
+      el('small', { class: 'hint', text: ` (${v.t})` })
+    );
+  });
+  return el('div', { class: 'panel' },
+    el('h2', { text: 'דיוק לפי תחום' }),
+    rows.length ? el('div', {}, rows) : el('p', { class: 'hint', text: 'אין עדיין נתונים.' })
+  );
+}
+
+function skillPanel(st, b) {
+  const titles = { ...(b.curriculum.skillTitles || {}) };
+  for (const s of b.sets.values()) titles[s.skill] = s.title;
+  const rows = Object.entries(st.stats?.bySkill || {})
+    .sort((a, c) => pct(a[1].c, a[1].t) - pct(c[1].c, c[1].t))
+    .map(([k, v]) => {
+      const p = pct(v.c, v.t);
+      return el('tr', {},
+        el('td', { text: titles[k] || k }),
+        el('td', { text: String(v.t) }),
+        el('td', { class: 'acc ' + accClass(p), text: p + '%' })
+      );
+    });
+  return el('div', { class: 'panel' },
+    el('h2', { text: 'לפי מיומנות — החלש ביותר למעלה' }),
+    rows.length
+      ? el('table', {}, el('thead', {}, el('tr', {}, el('th', { text: 'מיומנות' }), el('th', { text: 'תרגולים' }), el('th', { text: 'דיוק' }))), el('tbody', {}, rows))
+      : el('p', { class: 'hint', text: 'אין עדיין נתונים.' })
+  );
+}
+
+function errorsPanel(st, b) {
+  const entries = Object.entries(st.srs || {})
+    .filter(([, r]) => (r.wrong || 0) > 0)
+    .sort((a, c) => (c[1].wrong || 0) - (a[1].wrong || 0))
+    .slice(0, 12);
+  const tags = entries.map(([id, r]) => {
+    const it = b.items.get(id);
+    const label = !it ? id : it.kind === 'spell' ? it.word : it.kind === 'vocab' ? it.w : it.w || it.q || it.root || id;
+    return el('span', { class: 'wtag' }, String(label).slice(0, 40), el('b', { text: `×${r.wrong}` }));
+  });
+  return el('div', { class: 'panel' },
+    el('h2', { text: 'מה חוזר כטעות' }),
+    tags.length ? el('div', { class: 'wordlist' }, tags) : el('p', { class: 'hint', text: 'אין עדיין טעויות חוזרות. 👌' }),
+    tags.length ? el('p', { class: 'hint', text: 'שווה לעבור על אלה איתו בעל פה — שתי דקות, בלי מסך.' }) : null
+  );
+}
+
+function glossaryPanel(st) {
+  const g = st.glossary || [];
+  return el('div', { class: 'panel' },
+    el('h2', { text: 'מילים שהוא סימן כלא מוכרות' }),
+    g.length
+      ? el('div', { class: 'wordlist' }, g.slice(-30).map((x) => el('span', { class: 'wtag', text: x.w })))
+      : el('p', { class: 'hint', text: 'עוד לא סימן מילים בטקסטים.' })
+  );
+}
+
+function calendarPanel(st, days) {
+  const cells = days.map((d) => {
+    const rec = st.completedDays?.[d.d];
+    return el('div', {
+      class: 'cd' + (rec ? ' done' : d.d < (st.day || 1) ? ' miss' : ''),
+      title: `${d.title}${rec ? ` — ${pct(rec.correct, rec.total)}%` : ''}`,
+      text: String(d.d),
+    });
+  });
+  return el('div', { class: 'panel' },
+    el('h2', { text: '28 הימים' }),
+    el('div', { class: 'cal' }, cells),
+    el('p', { class: 'hint', text: 'ירוק = הושלם · אדום דהוי = יום שדולג' })
+  );
+}
+
+function writingPanel(st) {
+  const w = (st.writing || []).filter((x) => x.answer && x.answer.length > 5).slice(-6).reverse();
+  return el('div', { class: 'panel' },
+    el('h2', { text: 'מה הוא כתב' }),
+    w.length
+      ? el('div', {}, w.map((x) => el('div', { class: 'writing-sample' },
+          el('small', { text: `יום ${x.day} · ${x.kind || x.q || ''}` }),
+          el('div', { text: x.answer })
+        )))
+      : el('p', { class: 'hint', text: 'עוד לא הגיע לתחנות הכתיבה.' })
+  );
+}
+
+function recommendPanel(st, b) {
+  const titles = { ...(b.curriculum.skillTitles || {}) };
+  for (const s of b.sets.values()) titles[s.skill] = s.title;
+  const weak = Object.entries(st.stats?.bySkill || {})
+    .filter(([, v]) => v.t >= 6)
+    .map(([k, v]) => ({ k, p: pct(v.c, v.t) }))
+    .sort((a, c) => a.p - c.p)
+    .slice(0, 3);
+
+  const lines = [];
+  if (weak.length) lines.push(`הכי כדאי לחזק עכשיו: ${weak.map((w) => `${titles[w.k] || w.k} (${w.p}%)`).join(' · ')}.`);
+  const gap = (st.day || 1) - 1 - Object.keys(st.completedDays || {}).length;
+  if (gap > 2) lines.push(`יש ${gap} ימים שדולגו. אפשר להשלים אותם מהמפה — הם לא נעלמים.`);
+  if ((st.streak?.count || 0) >= 5) lines.push(`רצף של ${st.streak.count} ימים — זה בדיוק המנגנון שעובד. שווה לציין את זה בפה.`);
+  if ((st.glossary || []).length >= 5) lines.push('יש רשימת מילים שהוא לא הכיר — הזדמנות טובה לשיחה קצרה עליהן.');
+  if (!lines.length) lines.push('עוד מוקדם למסקנות. אחרי 3–4 ימים כאן תופיע תמונה ברורה.');
+
+  return el('div', { class: 'panel' },
+    el('h2', { text: 'המלצה' }),
+    el('div', { class: 'rec' }, lines.map((l) => el('p', { text: l })))
+  );
+}
+
+function exportCsv(st) {
+  const rows = [['יום', 'תאריך', 'תחנות', 'נכון', 'סהכ', 'דיוק%']];
+  for (const [d, r] of Object.entries(st.completedDays || {})) {
+    rows.push([d, r.date, r.stations, r.correct, r.total, pct(r.correct, r.total)]);
+  }
+  const csv = '﻿' + rows.map((r) => r.join(',')).join('\n');
+  const a = el('a', {
+    href: URL.createObjectURL(new Blob([csv], { type: 'text/csv' })),
+    download: `progress-${st.name || 'child'}.csv`,
+  });
+  a.click();
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,283 @@
+{
+  "_doc": "תוכנית 28 יום. כל יום: 3 תחנות. g = שם המנוע. sets = מפתחות מבנקי התוכן. סיום 2 תחנות = היום הושלם.",
+  "strands": {
+    "vocab": { "title": "אוצר מילים", "color": "#f5a524", "icon": "💎" },
+    "grammar": { "title": "דקדוק", "color": "#7c5cff", "icon": "🧩" },
+    "spelling": { "title": "כתיב", "color": "#2dd4a8", "icon": "✏️" },
+    "reading": { "title": "הבנת הנקרא", "color": "#4aa3ff", "icon": "📖" },
+    "writing": { "title": "כתיבה", "color": "#ff8fb1", "icon": "📝" },
+    "boss": { "title": "קרב בוס", "color": "#ff6a3d", "icon": "🗿" }
+  },
+  "_skillTitles": "שמות תצוגה למיומנויות קריאה (שאר המיומנויות שואבות את שמן מכותרת הסט)",
+  "skillTitles": {
+    "explicit-info": "קריאה: מציאת מידע גלוי",
+    "main-idea": "קריאה: רעיון מרכזי",
+    "context-word": "קריאה: מילה מתוך ההקשר",
+    "sequence": "קריאה: סדר אירועים",
+    "cause-effect": "קריאה: סיבה ותוצאה",
+    "inference": "קריאה: הסקת מסקנות",
+    "explicit-implicit": "קריאה: גלוי מול סמוי",
+    "title": "קריאה: כותרת ורעיון",
+    "fact-opinion": "קריאה: דעה מול עובדה",
+    "figurative": "קריאה: משמעות מטאפורית",
+    "data": "קריאה: טקסט מידעי",
+    "mixed": "קריאה: משולב"
+  },
+  "days": [
+    {
+      "d": 1, "strand": "vocab", "title": "מילות תיאור מדויקות",
+      "goal": "עשר מילים שמחליפות את \"מגניב\" ו\"רגיל\" במשהו מדויק.",
+      "stations": [
+        { "g": "warmup" },
+        { "g": "vocab-mix", "sets": ["adj1"], "n": 12 },
+        { "g": "reading", "text": "t1" }
+      ]
+    },
+    {
+      "d": 2, "strand": "spelling", "title": "א מול ע · ה או א בסוף",
+      "goal": "האותיות שנשמעות אותו דבר — ואיך לא ליפול בהן.",
+      "stations": [
+        { "g": "warmup" },
+        { "g": "spell-mix", "sets": ["s_alef_ayin", "s_hey_alef"], "n": 14 },
+        { "g": "spell-flash", "sets": ["s_alef_ayin", "s_hey_alef"], "n": 10 }
+      ]
+    },
+    {
+      "d": 3, "strand": "grammar", "title": "שם עצם, שם תואר ופועל",
+      "goal": "לזהות מי עושה, מה עושים ואיך זה נראה.",
+      "stations": [
+        { "g": "warmup" },
+        { "g": "grammar-mix", "sets": ["g_parts"], "n": 14 },
+        { "g": "reading", "text": "t2" }
+      ]
+    },
+    {
+      "d": 4, "strand": "vocab", "title": "פעלים של חשיבה",
+      "goal": "להסיק, לנמק, להשוות — הפעלים שמופיעים בכל מבחן.",
+      "stations": [
+        { "g": "warmup" },
+        { "g": "vocab-mix", "sets": ["verbs1"], "n": 12 },
+        { "g": "reading", "text": "t3" }
+      ]
+    },
+    {
+      "d": 5, "strand": "spelling", "title": "ח מול כ · ט מול ת",
+      "goal": "שתי ההבחנות שאחראיות לרוב שגיאות הכתיב.",
+      "stations": [
+        { "g": "warmup" },
+        { "g": "spell-mix", "sets": ["s_het_kaf", "s_tet_tav"], "n": 14 },
+        { "g": "spell-two-paths", "sets": ["s_het_kaf", "s_tet_tav"], "n": 12 }
+      ]
+    },
+    {
+      "d": 6, "strand": "grammar", "title": "זכר ונקבה, יחיד ורבים",
+      "goal": "כולל החריגים שאי אפשר לנחש: קיר-קירות, איש-אנשים.",
+      "stations": [
+        { "g": "warmup" },
+        { "g": "grammar-mix", "sets": ["g_gender"], "n": 14 },
+        { "g": "reading", "text": "t4" }
+      ]
+    },
+    {
+      "d": 7, "strand": "boss", "title": "קרב בוס — שבוע 1",
+      "goal": "הכול מהשבוע הזה, בקרב אחד.",
+      "stations": [
+        { "g": "boss", "fromDays": [1, 2, 3, 4, 5, 6], "n": 20 },
+        { "g": "world" }
+      ],
+      "reward": { "type": "skin", "id": "skin_miner", "name": "כורה מנוסה" }
+    },
+
+    {
+      "d": 8, "strand": "grammar", "title": "עבר, הווה ועתיד",
+      "goal": "מילת הזמן במשפט קובעת את צורת הפועל.",
+      "stations": [
+        { "g": "warmup" },
+        { "g": "grammar-mix", "sets": ["g_tense"], "n": 14 },
+        { "g": "reading", "text": "t5" }
+      ]
+    },
+    {
+      "d": 9, "strand": "spelling", "title": "מתי כותבים י'",
+      "goal": "כלל אחד חזק: מילים שמתחילות ב'מִ' — בלי יו\"ד.",
+      "stations": [
+        { "g": "warmup" },
+        { "g": "spell-mix", "sets": ["s_yod"], "n": 14 },
+        { "g": "spell-flash", "sets": ["s_yod"], "n": 10 }
+      ]
+    },
+    {
+      "d": 10, "strand": "vocab", "title": "מילים שאי אפשר לגעת בהן",
+      "goal": "סקרנות, נחישות, אחריות — שמות עצם מופשטים.",
+      "stations": [
+        { "g": "warmup" },
+        { "g": "vocab-mix", "sets": ["abstract1"], "n": 12 },
+        { "g": "reading", "text": "t6" }
+      ]
+    },
+    {
+      "d": 11, "strand": "spelling", "title": "ו' אחת או שתיים",
+      "goal": "צליל o/u = ו' אחת. צליל v באמצע מילה = שתי ו'.",
+      "stations": [
+        { "g": "warmup" },
+        { "g": "spell-mix", "sets": ["s_vav"], "n": 14 },
+        { "g": "spell-two-paths", "sets": ["s_vav"], "n": 12 }
+      ]
+    },
+    {
+      "d": 12, "strand": "grammar", "title": "מי עושה את הפעולה",
+      "goal": "סוף הפועל מגלה את הגוף: כתבתי, כתבת, כתבנו.",
+      "stations": [
+        { "g": "warmup" },
+        { "g": "grammar-mix", "sets": ["g_person"], "n": 14 },
+        { "g": "reading", "text": "t7" }
+      ]
+    },
+    {
+      "d": 13, "strand": "vocab", "title": "נרדפות וניגודים",
+      "goal": "לכל מילה יש שכנה קרובה ואויבת — שתיהן מרחיבות אותה.",
+      "stations": [
+        { "g": "warmup" },
+        { "g": "vocab-mix", "sets": ["synant"], "n": 12 },
+        { "g": "reading", "text": "t8" }
+      ]
+    },
+    {
+      "d": 14, "strand": "boss", "title": "קרב בוס — שבוע 2",
+      "goal": "הגולם השני. הכול מימים 8–13.",
+      "stations": [
+        { "g": "boss", "fromDays": [8, 9, 10, 11, 12, 13], "n": 20 },
+        { "g": "world" }
+      ],
+      "reward": { "type": "tool", "id": "tool_pick2", "name": "מכוש יהלום" }
+    },
+
+    {
+      "d": 15, "strand": "grammar", "title": "שורש ומשפחת מילים",
+      "goal": "שלוש אותיות שפותרות עשרות מילים — וגם את הכתיב שלהן.",
+      "stations": [
+        { "g": "warmup" },
+        { "g": "grammar-mix", "sets": ["g_root"], "n": 14 },
+        { "g": "reading", "text": "t9" }
+      ]
+    },
+    {
+      "d": 16, "strand": "spelling", "title": "השורש פותר את הכתיב",
+      "goal": "לא בטוח א' או ע'? מצא מילה קרובה מאותה משפחה.",
+      "stations": [
+        { "g": "warmup" },
+        { "g": "spell-mix", "sets": ["s_root_spell"], "n": 14 },
+        { "g": "spell-two-paths", "sets": ["s_root_spell", "s_alef_ayin"], "n": 12 }
+      ]
+    },
+    {
+      "d": 17, "strand": "vocab", "title": "מהשורש למשמעות",
+      "goal": "מעבדה, עובדה, משמרת — מאיפה הן באות.",
+      "stations": [
+        { "g": "warmup" },
+        { "g": "vocab-mix", "sets": ["rootwords"], "n": 12 },
+        { "g": "reading", "text": "t10" }
+      ]
+    },
+    {
+      "d": 18, "strand": "grammar", "title": "תחיליות, ה' הידיעה וו' החיבור",
+      "goal": "לפרק מילה ארוכה לחלקים ולהבין כל חלק.",
+      "stations": [
+        { "g": "warmup" },
+        { "g": "grammar-mix", "sets": ["g_prefix"], "n": 14 },
+        { "g": "spell-flash", "sets": ["s_sight"], "n": 10 }
+      ]
+    },
+    {
+      "d": 19, "strand": "vocab", "title": "מילות קישור וטיעון",
+      "goal": "למרות, לכן, כדי — המילים שבונות טיעון.",
+      "stations": [
+        { "g": "warmup" },
+        { "g": "vocab-mix", "sets": ["connectors"], "n": 14 },
+        { "g": "reading", "text": "t11" }
+      ]
+    },
+    {
+      "d": 20, "strand": "grammar", "title": "שם הפועל ומילות יחס",
+      "goal": "לרוץ, להסביר — ולמי נותנים: לי, אליו, ממנו.",
+      "stations": [
+        { "g": "warmup" },
+        { "g": "grammar-mix", "sets": ["g_infinitive"], "n": 14 },
+        { "g": "reading", "text": "t12" }
+      ]
+    },
+    {
+      "d": 21, "strand": "boss", "title": "קרב בוס — שבוע 3",
+      "goal": "הגולם השלישי. ימים 15–20.",
+      "stations": [
+        { "g": "boss", "fromDays": [15, 16, 17, 18, 19, 20], "n": 20 },
+        { "g": "world" }
+      ],
+      "reward": { "type": "skin", "id": "skin_scholar", "name": "חוקר הכתובות" }
+    },
+
+    {
+      "d": 22, "strand": "vocab", "title": "ניבים וביטויים",
+      "goal": "מה זה \"נפל לו האסימון\" ולמה זה לא קשור לכסף.",
+      "stations": [
+        { "g": "warmup" },
+        { "g": "vocab-mix", "sets": ["idioms"], "n": 14 },
+        { "g": "reading", "text": "t13" }
+      ]
+    },
+    {
+      "d": 23, "strand": "spelling", "title": "ק/כ · ש/ס · ב/ו",
+      "goal": "שלוש הבחנות אחרונות שנשמעות זהה.",
+      "stations": [
+        { "g": "warmup" },
+        { "g": "spell-mix", "sets": ["s_kuf_shin_bet"], "n": 16 },
+        { "g": "spell-flash", "sets": ["s_kuf_shin_bet"], "n": 10 }
+      ]
+    },
+    {
+      "d": 24, "strand": "grammar", "title": "סמיכות ושם מספר",
+      "goal": "בית ספר, עוגת שוקולד — ושני מול שתי.",
+      "stations": [
+        { "g": "warmup" },
+        { "g": "grammar-mix", "sets": ["g_smichut"], "n": 14 },
+        { "g": "reading", "text": "t14" }
+      ]
+    },
+    {
+      "d": 25, "strand": "spelling", "title": "מילים שלא נכתבות כמו שנשמעות",
+      "goal": "שלושים המילים שחוזרות בכל טקסט שתכתוב.",
+      "stations": [
+        { "g": "warmup" },
+        { "g": "spell-mix", "sets": ["s_sight"], "n": 16 },
+        { "g": "spell-two-paths", "sets": ["s_sight"], "n": 12 }
+      ]
+    },
+    {
+      "d": 26, "strand": "vocab", "title": "מילה לא מוכרת מתוך ההקשר",
+      "goal": "אסטרטגיה, לא שינון: איך לנחש מילה מהמשפט סביבה.",
+      "stations": [
+        { "g": "warmup" },
+        { "g": "vocab-mix", "sets": ["context"], "n": 12 },
+        { "g": "reading", "text": "t15" }
+      ]
+    },
+    {
+      "d": 27, "strand": "writing", "title": "עכשיו אתה כותב",
+      "goal": "פסקה משלך, עם המילים שאספת החודש.",
+      "stations": [
+        { "g": "warmup" },
+        { "g": "writing", "text": "t15" },
+        { "g": "world" }
+      ]
+    },
+    {
+      "d": 28, "strand": "boss", "title": "הגמר",
+      "goal": "כל ארבעת התחומים. ואז — התעודה.",
+      "stations": [
+        { "g": "boss", "fromDays": [1,2,3,4,5,6,8,9,10,11,12,13,15,16,17,18,19,20,22,23,24,25,26], "n": 28, "final": true },
+        { "g": "world" }
+      ],
+      "reward": { "type": "skin", "id": "skin_legend", "name": "אלוף המכרה", "certificate": true }
+    }
+  ]
+}

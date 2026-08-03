@@ -1,0 +1,12 @@
+{
+  "name": "hebrew-quest",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "מכרה המילים — 28 יום של עברית: אוצר מילים, דקדוק, כתיב והבנת הנקרא",
+  "scripts": {
+    "check": "node tools/validate.mjs && node tools/test-srs.mjs",
+    "icons": "python3 tools/make_icons.py",
+    "serve": "python3 -m http.server 8123"
+  }
+}
