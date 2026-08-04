@@ -95,4 +95,6 @@ export const sfx = {
     noise(0.5, { vol: 0.1, delay: 0.4 });
   },
   heartLost: () => tone(300, 0.3, { type: 'triangle', vol: 0.09, slide: 150 }),
+  // צליל ניטרלי למקום מילה חסרה במשפט — לא רומז על האות/הברה הראשונה כמו שקול אנושי היה עושה
+  blank: () => tone(500, 0.16, { type: 'sine', vol: 0.06 }),
 };

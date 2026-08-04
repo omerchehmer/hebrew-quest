@@ -2,10 +2,28 @@
 
 import { el, speakBtn } from '../ui.js';
 import { speak } from '../tts.js';
+import { sfx } from '../sfx.js';
 import { shuffle, pickDistractors } from '../srs.js';
 import { runQueue, prompt, optionList, markOptions, modeForItem } from './common.js';
 
 const clozeText = (item) => (item.cloze || '').replace('___', '______');
+
+// מקריא את משפט ההשלמה בלי לגלות את המילה החסרה: חלק לפני, צליל ניטרלי, חלק אחרי.
+// אחרת הקול היה בעצם פותר לילד את התרגיל לפני שהוא בחר.
+function speakCloze(item) {
+  const [before = '', after = ''] = (item.cloze || '').split('___');
+  const b = before.trim();
+  const a = after.trim();
+  const playAfter = () => {
+    if (a) speak(a);
+  };
+  if (b) {
+    speak(b, { onEnd: () => { sfx.blank(); setTimeout(playAfter, 250); } });
+  } else {
+    sfx.blank();
+    setTimeout(playAfter, 250);
+  }
+}
 
 /* ---------- מילה → משמעות ---------- */
 
@@ -49,7 +67,7 @@ export function renderCloze(item, api, state, pool) {
   const correctIndex = opts.findIndex((o) => o.id === item.id);
 
   const sentence = el('p', { class: 'cloze', html: clozeText(item) });
-  speak(item.cloze.replace('___', item.say || item.w));
+  speakCloze(item);
 
   const list = optionList(
     opts.map((o) => o.w),
@@ -70,7 +88,7 @@ export function renderCloze(item, api, state, pool) {
       'div',
       { class: 'game vocab' },
       prompt('איזו מילה מתאימה?'),
-      el('div', { class: 'card' }, sentence, speakBtn(() => item.cloze.replace('___', item.say || item.w))),
+      el('div', { class: 'card' }, sentence, speakBtn(null, { player: () => speakCloze(item) })),
       list
     )
   );

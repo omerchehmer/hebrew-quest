@@ -38,8 +38,9 @@ export const clear = (n) => {
 
 export const $ = (sel, root = document) => root.querySelector(sel);
 
-// כפתור "תקריא לי" — מופיע בכל מקום שיש בו טקסט
-export function speakBtn(getText, { label = 'הקרא', big = false } = {}) {
+// כפתור "תקריא לי" — מופיע בכל מקום שיש בו טקסט.
+// player: לוגיקת הקראה מותאמת (למשל משפט עם מילה חסרה) — כשקיים, גובר על getText.
+export function speakBtn(getText, { label = 'הקרא', big = false, player = null } = {}) {
   return el(
     'button',
     {
@@ -49,7 +50,8 @@ export function speakBtn(getText, { label = 'הקרא', big = false } = {}) {
       onclick: (e) => {
         e.stopPropagation();
         sfx.tap();
-        speak(typeof getText === 'function' ? getText() : getText);
+        if (player) player();
+        else speak(typeof getText === 'function' ? getText() : getText);
       },
     },
     el('span', { class: 'ico', text: '🔊' }),
